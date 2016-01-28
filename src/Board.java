@@ -12,12 +12,16 @@ public class Board
     //Width and height of board.
     private int w,h;
     
+    /**Stores list of pieces.*/
+    private ArrayList <Integer> PieceList;
+    
     /**Initializes board from integer array.*/
     Board(int state[][])
     {
         this.state = state;
         h = state.length;
         w = state[0].length;
+        PieceList = getPieceList();
     }
     
     /**Initializes board from Board object*/
@@ -26,6 +30,7 @@ public class Board
         this.state = b.state;
         h = b.getHeight();
         w = b.getWidth();
+        PieceList = getPieceList();
     }
     
     /**Initializes board from file.*/
@@ -38,10 +43,24 @@ public class Board
             h = state.length;
             w = state[0].length;
         }
+        
+        PieceList = getPieceList();
     }
     
     /**Initializes blank board.*/
     Board(){}
+    
+    ArrayList <Integer> getPieceList()
+    {
+        
+        
+        for(int x[]: state)
+            for(int y : x)
+                if(y>2 && !PieceList.contains(y))
+                {
+                    
+                }
+    }
     
     /**Prints game state*/
     void outputGameState()
@@ -172,6 +191,8 @@ public class Board
                     nextIdx++;
                 }  
             }
+        
+        PieceList = getPieceList();
     }
     
     int getHeight() {return h;}
@@ -182,19 +203,32 @@ public class Board
     
     ArrayList allMovesHelp(int a)
     {
-        ArrayList MoveList = new ArrayList();
+        ArrayList <Move> MoveList = new ArrayList<>();
         
-        for(int x[] : state)
+        boolean up = true;
+        boolean down = true;
+        boolean left = true;
+        boolean right = true;
+        
+        for(int i = 0;i < h;i++)
         {
-            for(int y : x)
+            for(int j = 0;j < w;j++)
             {
-                if(y==a)
+                if(state[i][j]==a)
                 {
-                    
+                    if(i!=0 && (state[i-1][j]!=a || state[i-1][j]!=0)) up = false;
+                    if(i!=h && (state[i+1][j]!=a || state[i+1][j]!=0)) down = false;
+                    if(j!=0 && (state[i][j-1]!=a || state[i][j-1]!=0)) left = false;
+                    if(j!=0 && (state[i][j+1]!=a || state[i][j+1]!=0)) right = false;
                 }
             }
         }
         
-        return null;
+        if(up==true) MoveList.add(new Move(a,Direction.up));
+        if(down==true) MoveList.add(new Move(a,Direction.down));
+        if(left==true) MoveList.add(new Move(a,Direction.left));
+        if(right==true) MoveList.add(new Move(a,Direction.right));
+        
+        return MoveList;
     }
 }
