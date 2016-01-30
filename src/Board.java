@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -13,7 +14,7 @@ public class Board
     private int w,h;
     
     /**Stores list of pieces.*/
-    private ArrayList <Integer> PieceList;
+    //private ArrayList <Integer> PieceList;
     
     /**Initializes board from integer array.*/
     Board(int state[][])
@@ -21,7 +22,6 @@ public class Board
         this.state = state;
         h = state.length;
         w = state[0].length;
-        PieceList = getPieceList();
     }
     
     /**Initializes board from Board object*/
@@ -30,7 +30,6 @@ public class Board
         this.state = b.state;
         h = b.getHeight();
         w = b.getWidth();
-        PieceList = getPieceList();
     }
     
     /**Initializes board from file.*/
@@ -43,8 +42,6 @@ public class Board
             h = state.length;
             w = state[0].length;
         }
-        
-        PieceList = getPieceList();
     }
     
     /**Initializes blank board.*/
@@ -52,14 +49,15 @@ public class Board
     
     ArrayList <Integer> getPieceList()
     {
-        
+        ArrayList <Integer> PL = new ArrayList<>();
         
         for(int x[]: state)
             for(int y : x)
-                if(y>2 && !PieceList.contains(y))
-                {
-                    
-                }
+                if(y>2 && !PL.contains(y)) PL.add(y);
+                        
+        Collections.sort(PL);
+        
+        return PL;
     }
     
     /**Prints game state*/
@@ -191,8 +189,6 @@ public class Board
                     nextIdx++;
                 }  
             }
-        
-        PieceList = getPieceList();
     }
     
     int getHeight() {return h;}
@@ -201,7 +197,7 @@ public class Board
     
     boolean isValid() {return state!=null;}
     
-    ArrayList allMovesHelp(int a)
+    ArrayList <Move> allMovesHelp(int a)
     {
         ArrayList <Move> MoveList = new ArrayList<>();
         
@@ -210,9 +206,9 @@ public class Board
         boolean left = true;
         boolean right = true;
         
-        for(int i = 0;i < h;i++)
+        for(int i=0; i<h; i++)
         {
-            for(int j = 0;j < w;j++)
+            for(int j=0; j<w; j++)
             {
                 if(state[i][j]==a)
                 {
@@ -230,5 +226,21 @@ public class Board
         if(right==true) MoveList.add(new Move(a,Direction.right));
         
         return MoveList;
+    }
+    
+    ArrayList <Move> allMoves()
+    {
+        ArrayList <Move> MoveList = new ArrayList<>();
+
+        ArrayList <Integer> PieceList = getPieceList();
+        for(int PieceNo : PieceList) MoveList.addAll(allMovesHelp(PieceNo));
+                
+        return MoveList;
+    }
+    
+    void applyMove(Move m)
+    {
+        int PieceNo = m.piece;
+        Direction d = m.direction;
     }
 }
