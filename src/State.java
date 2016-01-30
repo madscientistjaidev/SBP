@@ -16,6 +16,9 @@ public class State
     /**Height of board.*/
     int h;
     
+    /**Depth of recursion.*/
+    int d;
+    
     /**Initializes board from integer array.*/
     State(int state[][])
     {

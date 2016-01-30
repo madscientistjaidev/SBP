@@ -2,9 +2,19 @@ import java.util.ArrayList;
 
 public class SBP
 {    
+    /**Stores path of level file.*/
+    String path;
+    
+    SBP(String path)
+    {
+        this.path = path;
+    }
+    
     public static void main(String args[])
     {
-        State StartState = new State("B:\\Documents\\Drexel\\CS 510\\HW1\\SBP-level3.txt");
+        String path = "B:\\Documents\\Drexel\\CS 510\\HW1\\SBP-level3.txt";
+        
+        State StartState = new State(path);
         
         if(!StartState.isValid())
         {
@@ -27,10 +37,5 @@ public class SBP
         System.out.println("Number of moves = " + MoveList.size());
         
         for(Move x : MoveList) System.out.println(x.piece + "   " + x.direction);
-    }
-    
-    void RandomWalk(State StartState, int n)
-    {
-        
     }
 }
