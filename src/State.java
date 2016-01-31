@@ -330,11 +330,11 @@ public class State
     State applyMoveCloning(Move m)
     {
         int PieceNo = m.piece;
-        Direction d = m.direction;
+        Direction dir = m.direction;
         
         int NewBoard[][] = board;
         
-        switch(d)
+        switch(dir)
         {
             case up:
                 for(int i=0; i<h; i++)
