@@ -258,9 +258,9 @@ public class State
     void applyMove(Move m)
     {
         int PieceNo = m.piece;
-        Direction d = m.direction;
+        Direction dir = m.direction;
         
-        switch(d)
+        switch(dir)
         {
             case up:
                 for(int i=0; i<h; i++)
