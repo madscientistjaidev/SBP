@@ -1,4 +1,4 @@
-public class Walk
+public class Search
 {
     void Random(State StartState, int n)
     {

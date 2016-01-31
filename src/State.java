@@ -93,6 +93,7 @@ public class State
         return true;
     }
     
+    /**Checks if state is equal to current one.*/
     boolean stateEqual(int a[][])
     {
         if(a.length!=h) return false;
@@ -164,6 +165,7 @@ public class State
         return NewBoard;
     }
     
+    /**Used to swap during normalization.*/
     void swapIdx(int idx1,int idx2)
     {
         for(int i = 0;i < h;i++)

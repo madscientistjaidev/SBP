@@ -11,7 +11,7 @@ public class Table
     
     boolean contains()
     {
-        return entries.contains(this);
+        return false;
     }
     
     int size()
