@@ -12,7 +12,7 @@ public class SBP
     
     public static void main(String args[])
     {
-        String path = "B:\\Documents\\Drexel\\CS 510\\HW1\\SBP-level3.txt";
+        String path = "src/SlidingBrickPuzzle2/sliding_brick_puzzle.txt";
         
         State StartState = new State(path);
         
@@ -32,10 +32,14 @@ public class SBP
         System.out.println();
         
         System.out.println("Move List");
-        ArrayList <Move> MoveList = StartState.allMoves();
+        ArrayList <Move> MovesList = StartState.allMoves();
         
-        System.out.println("Number of moves = " + MoveList.size());
+        System.out.println("Number of moves = " + MovesList.size());
         
-        for(Move x : MoveList) System.out.println(x.piece + "   " + x.direction);
+        for(Move x : MovesList) System.out.println(x.piece + "   " + x.direction);
+        
+        Move m = new Move(2, Direction.left);
+        StartState.applyMove(m);
+        StartState.outputGameState();
     }
 }

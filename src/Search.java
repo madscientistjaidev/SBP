@@ -15,8 +15,8 @@ public class Search
         
     }
     
-    void aStar()
+    void aStar(State StartState)
     {
-        
+        int [][] visited;
     }
 }

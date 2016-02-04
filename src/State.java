@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+
 public class State
 {
     /**Stores board as an integer array.*/
@@ -38,9 +39,9 @@ public class State
     /**Initializes board from file.*/
     State(String path)
     {
-        board = loadGameState(path);
-        
-        if(board!=null)
+        this.board = loadGameState(path);
+
+        if(this.board!=null)
         {
             h = board.length;
             w = board[0].length;
@@ -124,15 +125,14 @@ public class State
         Scanner ParseFile;
         Scanner ParseLine;
         int w,h;
-        
+
         try
         {
             f = new File(path);
             ParseFile = new Scanner(f);
         }
-        
         catch(FileNotFoundException e) {return null;}
-        
+
         String line = ParseFile.nextLine();
         ParseLine = new Scanner(line).useDelimiter(",");
         
@@ -147,7 +147,6 @@ public class State
         
         //Stores values read from game file.
         int NewBoard[][] = new int[h][w];
-        
         for(int i=0; i<h; i++)
         {
             if(!ParseFile.hasNextLine()) return null;
@@ -161,7 +160,6 @@ public class State
                 NewBoard[i][j] = ParseLine.nextInt();
             }
         }
-        
         return NewBoard;
     }
     
@@ -201,7 +199,55 @@ public class State
     int getWidth() {return w;}
     
     boolean isValid() {return board!=null;}
-    
+
+    /**Locate piece in the state.**/
+    Piece retrievePieceFromBoard (int pieceNumber)
+    {
+    	int [] coordinates = {-1, -1, -1, -1, -1, -1, -1, -1};
+    	Piece piece = new Piece (coordinates, board, pieceNumber);
+
+            for (int i = 0; i < board.length; i ++)
+                for (int j = 0; j < board[i].length; j ++)
+                {
+                    if (board[i][j] == pieceNumber)
+                    {
+                        piece.Q2X = i;
+                        piece.Q2Y = j;
+
+                        break;
+                    }
+
+                    if (piece.Q2X != -1 && piece.Q2Y != -1) break;
+                }
+            
+
+            try {if (piece.Q2X == -1 || piece.Q2Y == -1) throw new Exception("brick not found");}
+
+            catch (Exception e) {System.out.println(e);}
+
+            piece.Q1X = piece.Q2X;
+            piece.Q3Y = piece.Q2Y;
+
+            int j;
+            int temp [] = board[piece.Q2X];
+            for (j = piece.Q2Y; j < temp.length - 1 && temp [j] == pieceNumber; j ++);
+
+            piece.Q1Y = j - 1;
+            piece.Q4Y = piece.Q1Y;
+
+            int i;
+            for (i = piece.Q2X; i < board[i].length && board[i][piece.Q2Y] == pieceNumber; i ++);
+
+            if (i < board[i].length || board[i][piece.Q2Y] != pieceNumber)
+                    piece.Q3X = i - 1;
+            else
+                    piece.Q3X = i;
+
+            piece.Q4X = piece.Q3X;
+
+            return piece;
+	}
+
     /**Returns all moves possible for a given piece.*/
     ArrayList <Move> allMovesHelp(int a)
     {
@@ -212,32 +258,24 @@ public class State
         boolean left = true;
         boolean right = true;
         
-        for(int i=0; i<h; i++)
-        {
-            for(int j=0; j<w; j++)
-            {
-                if(board[i][j]==a)
-                {
-                    System.out.println("Found " + a + " at " + i + "," + j);
-                    
-                    if(i==0) up = false;
-                    if(i==h) down = false;
-                    if(j==0) left = false;
-                    if(j==w) right = false;
-                    
-                    if (board[i-1][j]!=a || board[i-1][j]!=0) up = false;
-                    if (board[i+1][j]!=a || board[i+1][j]!=0) down = false;
-                    if (board[i][j-1]!=a || board[i][j-1]!=0) left = false;
-                    if (board[i][j+1]!=a || board[i][j+1]!=0) right = false;
-                }
-            }
+        Piece piece = retrievePieceFromBoard (a);
+       
+        if (piece.MoveUp()) {
+        	MoveList.add(new Move(a,Direction.up));
         }
         
-        if(up==true) MoveList.add(new Move(a,Direction.up));
-        if(down==true) MoveList.add(new Move(a,Direction.down));
-        if(left==true) MoveList.add(new Move(a,Direction.left));
-        if(right==true) MoveList.add(new Move(a,Direction.right));
+        if (piece.MoveDown()) {
+        	MoveList.add(new Move(a,Direction.down));
+        }
         
+        if (piece.MoveLeft()) {
+        	MoveList.add(new Move(a,Direction.left));
+        }
+        
+        if (piece.MoveRight()) {
+        	MoveList.add(new Move(a,Direction.right));
+        }
+
         return MoveList;
     }
     
@@ -247,9 +285,11 @@ public class State
         ArrayList <Move> MoveList = new ArrayList<>();
 
         ArrayList <Integer> PieceList = getPieceList();
-        PieceList.stream().forEach((PieceNo) -> {
-            MoveList.addAll(allMovesHelp(PieceNo));
-        });
+
+        //TODO
+        for (int i = 0; i < PieceList.size(); i ++) {
+            MoveList.addAll(allMovesHelp(PieceList.get(i)));
+        };
                 
         return MoveList;
     }
@@ -258,9 +298,9 @@ public class State
     void applyMove(Move m)
     {
         int PieceNo = m.piece;
-        Direction dir = m.direction;
+        Direction d = m.direction;
         
-        switch(dir)
+        switch(d)
         {
             case up:
                 for(int i=0; i<h; i++)
@@ -330,11 +370,11 @@ public class State
     State applyMoveCloning(Move m)
     {
         int PieceNo = m.piece;
-        Direction dir = m.direction;
+        Direction d = m.direction;
         
         int NewBoard[][] = board;
         
-        switch(dir)
+        switch(d)
         {
             case up:
                 for(int i=0; i<h; i++)
