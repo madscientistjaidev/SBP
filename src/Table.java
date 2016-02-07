@@ -2,29 +2,30 @@ import java.util.ArrayList;
 
 public class Table
 {
-    private ArrayList entries;
+    private ArrayList <Integer> entries;
     
     Table()
     {
         entries = new ArrayList<>();
     }
     
-    boolean contains()
-    {
-        return false;
-    }
-    
-    int size()
-    {
-        return entries.size();
-    }
-    
-    boolean add(State s)
+    boolean contains(State s)
     {
         s.normalizeState();
         
         int h = s.board.hashCode();
         
-        return true;
+        return entries.contains(h);
+    }
+    
+    int size() {return entries.size();}
+    
+    void add(State s)
+    {
+        s.normalizeState();
+        
+        int h = s.board.hashCode();
+        
+        entries.add(h);
     }
 }

@@ -6,6 +6,8 @@ public class Search
     {
         int depth;
         
+        Table closed = new Table();
+        
         ArrayList <Move> MoveList = StartState.allMoves();
         
         Move thisMove = getRandom(MoveList);
